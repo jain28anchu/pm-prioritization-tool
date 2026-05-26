@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI-Powered RICE Prioritization Tool</title>
+
+    <style>
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 48px;
+        }
+
+        .brand {
+            font-size: 18px;
+            font-weight: 750;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.72);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #050505;
+            color: white;
+            font-family: Inter, system-ui, sans-serif;
+            padding: 50px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tool-wrapper {
+            background: #0d0d0f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 36px;
+            padding: 50px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            font-size: 58px;
+            line-height: 1.05;
+            margin-bottom: 20px;
+            max-width: 950px;
+        }
+
+        .intro {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            max-width: 950px;
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .section-description {
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 17px;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            max-width: 950px;
+        }
+
+        .rice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 55px;
+        }
+
+        .rice-card {
+            background: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.06),
+                    rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 30px;
+        }
+
+        .rice-card h3 {
+            font-size: 30px;
+            margin-bottom: 14px;
+        }
+
+        .rice-card p {
+            font-size: 17px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.68);
+        }
+
+        .calculator-section {
+            margin-top: 20px;
+            padding-top: 45px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+
+        .question-card label {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 14px;
+            font-weight: 650;
+        }
+
+        select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            color: white;
+            padding: 16px;
+            font-size: 15px;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        option {
+            background: #111;
+            color: white;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 16px 28px;
+            border-radius: 18px;
+            border: none;
+            font-size: 16px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .primary-btn {
+            background: white;
+            color: black;
+        }
+
+        .primary-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.11);
+        }
+
+        .results {
+            margin-top: 50px;
+            display: none;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .score-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        .score-card h4 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: 750;
+        }
+
+        .final-score {
+            margin-top: 30px;
+            padding: 32px;
+            border-radius: 28px;
+            background: linear-gradient(135deg,
+                    rgba(125, 92, 255, 0.25),
+                    rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .final-score h2 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .final-score p {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .warning {
+            display: none;
+            margin-top: 20px;
+            color: #ffb4b4;
+            font-size: 15px;
+        }
+
+        @media (max-width: 900px) {
+
+            .rice-grid,
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 42px;
+            }
+
+            .tool-wrapper {
+                padding: 28px;
+            }
+
+            .rice-card h3 {
+                font-size: 26px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="tool-wrapper">
+            <nav class="nav">
+                <div class="brand">Aanchal Jain</div>
+
+                <div class="nav-links">
+                    <a href="https://www.linkedin.com/in/anchujain/" target="_blank">LinkedIn</a>
+                    <a href="https://github.com/YOUR-GITHUB" target="_blank">GitHub</a>
+                    <a href="mailto:jain28anchu@gmail.com">Contact</a>
+                </div>
+            </nav>
+
+            <div class="tag">AI Product Strategy Tool</div>
+
+            <h1>AI-Powered RICE Prioritization Tool</h1>
+
+            <p class="intro">
+                An AI-assisted product prioritization tool that helps teams evaluate initiatives using automated
+                Reach, Impact, Confidence, and Effort scoring.
+            </p>
+
+            <h2 class="section-title">How It Works</h2>
+
+            <p class="section-description">
+                Answer a series of guided product strategy questions around customer impact, business value,
+                confidence, and technical complexity. The tool converts your responses into structured RICE
+                scores to support faster, more consistent prioritization decisions.
+            </p>
+
+            <div class="rice-grid">
+                <div class="rice-card">
+                    <h3>Reach</h3>
+                    <p>Measures the number of users, customers, or workflows impacted by the initiative.</p>
+                </div>
+
+                <div class="rice-card">
+                    <h3>Impact</h3>
+                    <p>Measures the potential business or customer value created if the initiative succeeds.</p>
+                </div>
+
+                <div class="rice-card">
+                    <h3>Confidence</h3>
+                    <p>Measures how confident the team is in the available data, assumptions, and expected outcomes.</p>
+                </div>
+
+                <div class="rice-card">
+                    <h3>Effort</h3>
+                    <p>Measures the level of engineering, design, operational, and cross-functional work required to
+                        execute the initiative.</p>
+                </div>
+            </div>
+
+            <div class="calculator-section">
+
+                <h2 class="section-title">Prioritize an Initiative</h2>
+
+                <p class="section-description">
+                    Select the option that best describes the initiative. The tool will calculate a priority
+                    recommendation
+                    based on Reach, Impact, Confidence, and Effort.
+                </p>
+
+                <div class="question-card">
+                    <label>Reach — how broadly will this initiative affect users or workflows?</label>
+
+                    <select id="reach">
+                        <option value="">Select reach</option>
+                        <option value="1">Very limited — affects a niche workflow or internal team</option>
+                        <option value="3">Small audience — impacts one user segment or feature area</option>
+                        <option value="5">Moderate reach — impacts a meaningful portion of active users</option>
+                        <option value="8">High reach — affects multiple user segments or key workflows</option>
+                        <option value="10">Massive reach — impacts most users, customers, or business operations
+                        </option>
+                    </select>
+                </div>
+
+                <div class="question-card">
+                    <label>Impact — how meaningful is the expected business or customer impact?</label>
+
+                    <select id="impact">
+                        <option value="">Select impact</option>
+                        <option value="1">Low impact — minor usability or operational improvement</option>
+                        <option value="3">Moderate impact — noticeable improvement to workflows or metrics</option>
+                        <option value="5">Strong impact — likely to improve adoption, efficiency, or engagement</option>
+                        <option value="8">Major impact — significant business value or customer experience gain</option>
+                        <option value="10">Transformational — could materially shift product or business outcomes
+                        </option>
+                    </select>
+                </div>
+
+                <div class="question-card">
+                    <label>Confidence — how confident are we in the assumptions, data, and expected outcomes?</label>
+
+                    <select id="confidence">
+                        <option value="">Select confidence</option>
+                        <option value="1">Low confidence — mostly assumptions with limited validation</option>
+                        <option value="3">Some confidence — partial data or anecdotal evidence available</option>
+                        <option value="5">Moderate confidence — supported by research, trends, or prior learnings
+                        </option>
+                        <option value="8">High confidence — backed by strong data or repeated validation</option>
+                        <option value="10">Very high confidence — validated through experiments or proven results
+                        </option>
+                    </select>
+                </div>
+
+                <div class="question-card">
+                    <label>Effort — what level of engineering, operational, and cross-functional effort is
+                        required?</label>
+
+                    <select id="effort">
+                        <option value="">Select effort</option>
+                        <option value="1">Very low effort — quick implementation with minimal dependencies</option>
+                        <option value="2">Low effort — straightforward execution within one team</option>
+                        <option value="4">Moderate effort — requires coordination across functions or systems</option>
+                        <option value="7">High effort — technically complex with multiple dependencies</option>
+                        <option value="10">Very high effort — major initiative requiring significant time and resources
+                        </option>
+                    </select>
+                </div>
+
+                <p class="warning" id="warning">
+                    Please select an option for all four categories.
+                </p>
+
+                <div class="button-row">
+                    <button class="primary-btn" onclick="calculateScores()">
+                        Generate Recommendation
+                    </button>
+
+                    <button class="secondary-btn" onclick="resetForm()">
+                        Reset
+                    </button>
+                </div>
+
+                <div class="results" id="results">
+
+                    <div class="results-grid">
+
+                        <div class="score-card">
+                            <h4>Reach</h4>
+                            <div class="score-number" id="reachScore">0</div>
+                        </div>
+
+                        <div class="score-card">
+                            <h4>Impact</h4>
+                            <div class="score-number" id="impactScore">0</div>
+                        </div>
+
+                        <div class="score-card">
+                            <h4>Confidence</h4>
+                            <div class="score-number" id="confidenceScore">0</div>
+                        </div>
+
+                        <div class="score-card">
+                            <h4>Effort</h4>
+                            <div class="score-number" id="effortScore">0</div>
+                        </div>
+
+                    </div>
+
+                    <div class="final-score">
+                        <h2 id="priorityScore">Priority Score: 0</h2>
+                        <p id="priorityText"></p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+
+        function calculateScores() {
+
+            const reach = Number(document.getElementById("reach").value);
+            const impact = Number(document.getElementById("impact").value);
+            const confidence = Number(document.getElementById("confidence").value);
+            const effort = Number(document.getElementById("effort").value);
+
+            const warning = document.getElementById("warning");
+
+            if (!reach || !impact || !confidence || !effort) {
+                warning.style.display = "block";
+                return;
+            }
+
+            warning.style.display = "none";
+
+            const priorityScore = ((reach * impact * confidence) / effort).toFixed(1);
+
+            document.getElementById("reachScore").innerText = reach;
+            document.getElementById("impactScore").innerText = impact;
+            document.getElementById("confidenceScore").innerText = confidence;
+            document.getElementById("effortScore").innerText = effort;
+
+            document.getElementById("priorityScore").innerText =
+                `Priority Score: ${priorityScore}`;
+
+            let recommendation = "";
+
+            if (priorityScore >= 80) {
+
+                recommendation =
+                    "High-priority initiative. This has strong reach, impact, and confidence relative to the effort required. It is a strong candidate for roadmap prioritization.";
+
+            } else if (priorityScore >= 35) {
+
+                recommendation =
+                    "Promising initiative. This may be worth prioritizing, but the team should validate assumptions, refine scope, or reduce effort before committing.";
+
+            } else {
+
+                recommendation =
+                    "Lower-priority initiative. The current value-to-effort ratio is not strong enough. Consider reframing the problem, narrowing scope, or gathering more evidence.";
+            }
+
+            document.getElementById("priorityText").innerText = recommendation;
+
+            document.getElementById("results").style.display = "block";
+        }
+
+        function resetForm() {
+
+            document.querySelectorAll("select").forEach(select => {
+                select.value = "";
+            });
+
+            document.getElementById("results").style.display = "none";
+            document.getElementById("warning").style.display = "none";
+        }
+
+    </script>
+
+</body>
+
+</html>
